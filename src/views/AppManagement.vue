@@ -52,6 +52,7 @@ import {
 } from '@/components/ui/pagination'
 import { Input } from '@/components/ui/input'
 import { Button } from '@/components/ui/button'
+import { cn } from '@/lib/utils'
 import { Search, MoreHorizontal, Activity, ArrowUpDown } from 'lucide-vue-next'
 
 // Mock Data
@@ -103,7 +104,10 @@ const paginatedApps = computed(() => {
   return filteredApps.value.slice(start, end)
 })
 
-const getStatusColor = (status: string) => {
+const getStatusColor = (status: string | undefined) => {
+  if (!status) {
+    return 'bg-zinc-100 text-zinc-800 border-zinc-200'
+  }
   switch(status) {
     case 'Healthy': return 'bg-emerald-100 text-emerald-800 dark:bg-emerald-900/30 dark:text-emerald-400 border-emerald-200 dark:border-emerald-800'
     case 'Warning': return 'bg-amber-100 text-amber-800 dark:bg-amber-900/30 dark:text-amber-400 border-amber-200 dark:border-amber-800'
@@ -252,14 +256,10 @@ const getStatusColor = (status: string) => {
 
             <template v-for="(item, index) in totalPages" :key="index">
               <!-- Simply showing a few pages to avoid complex ellipsis logic in mock -->
-              <PaginationItem v-if="Math.abs(item - currentPage) <= 2">
-                <Button 
-                  :variant="item === currentPage ? 'default' : 'outline'"
-                  class="w-9 h-9 p-0"
-                  @click="currentPage = item"
-                >
-                   {{ item }}
-                </Button>
+              <PaginationItem v-if="Math.abs(item - currentPage) <= 2" :value="item">
+                <span :class="cn('w-9 h-9 flex items-center justify-center', item === currentPage ? 'bg-zinc-100' : '')">
+                  {{ item }}
+                </span>
               </PaginationItem>
             </template>
 
