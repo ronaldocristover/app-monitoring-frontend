@@ -83,6 +83,8 @@ const handleView = (app: any) => {
 const searchQuery = ref('')
 const statusFilter = ref('All')
 const currentPage = ref(1)
+const mobileItemsPerPage = ref(5)
+const desktopItemsPerPage = ref(10)
 const itemsPerPage = 10
 
 // Computed
@@ -337,6 +339,34 @@ const getStatusColor = (status: string | undefined) => {
         class="bg-white dark:bg-zinc-900 rounded-xl border border-zinc-200 dark:border-zinc-800 shadow-sm p-8 text-center"
       >
         <p class="text-zinc-500">No applications found matching your criteria.</p>
+
+    <!-- Mobile Pagination -->
+    <div class="flex flex-col gap-4">
+      <div class="flex items-center justify-between">
+        <span class="text-sm text-zinc-500">
+          Showing <strong>{{ (currentPage.value - 1) * 10 + 1 }}</strong> to <strong>{{ Math.min(currentPage.value * 10, totalItems.value) }}</strong> of <strong>{{ totalItems }}</strong> results
+        </span>
+        <Select v-model="mobileItemsPerPage">
+          <SelectTrigger class="w-[120px]">
+            <SelectValue />
+          </SelectTrigger>
+          <SelectContent>
+            <SelectItem :value="5">5 per page</SelectItem>
+            <SelectItem :value="10">10 per page</SelectItem>
+            <SelectItem :value="20">20 per page</SelectItem>
+          </SelectContent>
+        </Select>
+      </div>
+      <div class="flex items-center justify-between">
+        <Button variant="outline" size="sm" :disabled="currentPage.value === 1" @click="currentPage.value = 1">First</Button>
+        <div class="flex items-center gap-2">
+          <Button variant="outline" size="sm" :disabled="currentPage.value === 1" @click="currentPage.value > 1 ? currentPage.value-- : null">Previous</Button>
+          <span class="text-sm text-zinc-500">Page {{ currentPage.value }} of {{ totalPages }}</span>
+          <Button variant="outline" size="sm" :disabled="currentPage.value === totalPages" @click="currentPage.value < totalPages ? currentPage.value++ : null">Next</Button>
+        </div>
+        <Button variant="outline" size="sm" :disabled="currentPage.value === totalPages" @click="currentPage.value = totalPages">Last</Button>
+      </div>
+    </div>
       </div>
     </div>
 
